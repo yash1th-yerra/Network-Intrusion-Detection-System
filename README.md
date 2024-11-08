@@ -21,7 +21,10 @@ NIDS are broadly categorized into:
 
 
 The purpose of your project, based on the context gathered from other chats, is to develop and improve a **network intrusion detection system (IDS)** that uses **attention** and **BiLSTM (Bidirectional Long Short-Term Memory)** models. This system is designed to detect unusual patterns or malicious activities in network traffic, which is crucial for **network security** and **privacy protection**. Specifically, your IDS aims to:
+#### BiLSTM Architecture:
+![image](https://github.com/user-attachments/assets/9896cfe2-6c74-405d-b07e-60aa48156e67)
 
+#### BiLSTM with Attention Layer Architecture:
 ![image](https://github.com/user-attachments/assets/6ad704a2-79d5-43b9-875d-e327b4a0f8eb)
 
 
