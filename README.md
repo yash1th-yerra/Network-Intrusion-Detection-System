@@ -61,7 +61,6 @@ The **NSL-KDD dataset** is a widely used dataset for evaluating and testing Intr
 6.  **Size**: The NSL-KDD dataset consists of **125,973 training records** and **22,544 testing records**, making it a moderate-sized dataset suitable for testing machine learning algorithms.
 `Dual Classification`	  	
 ![Pie_chart_binary](https://github.com/user-attachments/assets/9f155912-51bc-4d8a-b134-fceaf565f19a)
-
 `Multi Classification`
 ![Pie_chart_multi](https://github.com/user-attachments/assets/a7d44def-8e3c-4e5c-91d1-0761d3dca7f5)
 
