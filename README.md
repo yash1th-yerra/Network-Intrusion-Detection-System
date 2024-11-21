@@ -130,7 +130,7 @@ After they are plotter using following:
 
 
 ### BiLSTM with ATTENTION
-![accuracy_loss_blstm_multi](https://github.com/user-attachments/assets/81dbd45a-a836-4171-b391-90e3aa47df08)
+![Accuracy_loss_blstm_attention](https://github.com/user-attachments/assets/ee6cc60f-46d2-4a76-8cdf-772be5285acc)
 
 
 ## **Key Achievements**:
