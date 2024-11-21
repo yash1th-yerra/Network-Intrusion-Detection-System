@@ -1,166 +1,82 @@
 import os
-import pickle
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, classification_report
+import streamlit as st
+from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
-from sklearn.model_selection import train_test_split
 
-# Function to save classification reports
-def save_report(report, model_name):
-    report_file = os.path.join('reports/new', f"classification_report_{model_name}.txt")
-    with open(report_file, 'w') as f:
-        f.write(report)
-    print(f"Report saved: {report_file}")
 
-def main():
-    # Load label classes (assumes these files exist in the data folder)
-    le1_classes = np.load('data/le1_classes.npy', allow_pickle=True)
-    le2_classes = np.load('data/le2_classes.npy', allow_pickle=True)
+# Constants
+MODEL_PATH = "models/modified_bilstm_attention_model.h5"
+LABEL_ENCODER_PATH = './label_classes/le2_classes.npy'
+file_path='./sample_input.csv'
 
-    # Load binary data (bin_data.csv)
-    bin_data = pd.read_csv('data/bin_data.csv')
-    bin_data.drop(bin_data.columns[0], axis=1, inplace=True)
+# Helper Functions
+def load_model(model_path):
+    """Load the trained BiLSTM model and the label encoder classes."""
+    model = load_model(model_path, compile=False)
 
-    # Load multi-class data (multi_data.csv)
-    multi_data = pd.read_csv('data/multi_data.csv')
-    multi_data.drop(multi_data.columns[0], axis=1, inplace=True)
+    return model
 
-    # Prepare input features and target labels for binary classification
-    X_bin = bin_data.iloc[:, :-1].to_numpy()
-    y_bin = bin_data['intrusion'].to_numpy()
 
-    # Prepare input features and target labels for multi-class classification
-    X_multi = multi_data.iloc[:, :-1].to_numpy()
-    y_multi = multi_data['intrusion'].to_numpy()
+def preprocess_sample_input(file_path_input):
+    """
+    Load and preprocess the sample input data.
 
-    # Split data into train and test sets
-    X_bin_train, X_bin_test, y_bin_train, y_bin_test = train_test_split(X_bin, y_bin, test_size=0.25, random_state=42)
-    X_multi_train, X_multi_test, y_multi_train, y_multi_test = train_test_split(X_multi, y_multi, test_size=0.25, random_state=42)
+    Parameters:
+    - file_path: str, path to the CSV file containing sample input data.
 
-    # Ensure reports folder exists
-    os.makedirs('reports', exist_ok=True)
+    Returns:
+    - X_sample: numpy array, preprocessed input data.
+    """
+    # Load the sample CSV data
+    sample_data = pd.read_csv(file_path_input)
+    # Preprocess the data (convert to numpy array and reshape)
+    X_sample = sample_data.values  # Convert to numpy array
+    X_sample = X_sample.reshape((X_sample.shape[0], 1, X_sample.shape[1]))  # Reshape to (samples, time_steps, features)
+    X_sample = np.array(X_sample, dtype='float32')  # Ensure the data type is float32
 
-    # **Linear SVM (Binary Classification)**
+    return X_sample
 
-    # Load the model from the models folder
-    with open('models/lsvm_binary.pkl', 'rb') as file:
-        lsvm = pickle.load(file)
 
-    # Predict and calculate accuracy
-    y_bin_pred_lsvm = lsvm.predict(X_bin_test)
-    bin_accuracy_lsvm = accuracy_score(y_bin_test, y_bin_pred_lsvm) * 100
-    print("LSVM Binary Classification Accuracy: ", bin_accuracy_lsvm)
+# Function to make predictions and convert indices to class labels
+def predict_classes(model, X_sample, le2_classes):
+    """
+    Make predictions using the trained model and convert class indices to labels.
 
-    # Print and save classification report
-    report_lsvm = classification_report(y_bin_test, y_bin_pred_lsvm, target_names=le1_classes)
-    print(report_lsvm)
-    save_report(report_lsvm, "lsvm")
+    Parameters:
+    - model: Keras model, the trained model to use for predictions.
+    - X_sample: numpy array, the preprocessed input data.
+    - le2_classes: numpy array, the class labels array (from le2_classes.npy).
 
-    # **Quadratic SVM (Binary Classification)**
+    Returns:
+    - predicted_class_names: list of predicted class names corresponding to the input data.
+    """
+    # Make predictions
+    predictions = model.predict(X_sample)
 
-    # Load the model from the models folder
-    with open('models/qsvm_binary.pkl', 'rb') as file:
-        qsvm = pickle.load(file)
+    # Get the predicted class indices
+    predicted_class_indices = np.argmax(predictions, axis=1)
 
-    # Predict and calculate accuracy
-    y_bin_pred_qsvm = qsvm.predict(X_bin_test)
-    bin_accuracy_qsvm = accuracy_score(y_bin_test, y_bin_pred_qsvm) * 100
-    print("QSVM Binary Classification Accuracy: ", bin_accuracy_qsvm)
+    # Convert class indices to class names
+    predicted_class_names = le2_classes[predicted_class_indices]
 
-    # Print and save classification report
-    report_qsvm = classification_report(y_bin_test, y_bin_pred_qsvm, target_names=le1_classes)
-    print(report_qsvm)
-    save_report(report_qsvm, "qsvm")
+    return predicted_class_names
 
-    # **Decision Tree Classifier (Binary Classification)**
 
-    # Load the model from the models folder
-    with open('models/dt_binary.pkl', 'rb') as file:
-        dt_bin = pickle.load(file)
-
-    # Predict and calculate accuracy
-    y_bin_pred_dt = dt_bin.predict(X_bin_test)
-    bin_accuracy_dt = accuracy_score(y_bin_test, y_bin_pred_dt) * 100
-    print("Decision Tree Binary Classification Accuracy: ", bin_accuracy_dt)
-
-    # Print and save classification report
-    report_dt = classification_report(y_bin_test, y_bin_pred_dt, target_names=le1_classes)
-    print(report_dt)
-    save_report(report_dt, "dt_binary")
-
-    # **LSTM (Binary Classification)**
-
-    # Load the LSTM model from the models folder
-    lstm_bin = load_model('models/lstm_binary.h5')
-
-    # Reshape the data to be 3-dimensional [samples, time steps, features] for LSTM
-    X_bin_lstm = X_bin.reshape((X_bin.shape[0], 1, X_bin.shape[1]))
-    X_bin_lstm_test = X_bin_lstm[X_bin_test.index]
-
-    # Predict and calculate accuracy
-    y_bin_pred_lstm = (lstm_bin.predict(X_bin_lstm_test) > 0.5).astype("float32").flatten()
-    bin_accuracy_lstm = accuracy_score(y_bin_test, y_bin_pred_lstm) * 100
-    print("LSTM Binary Classification Accuracy: ", bin_accuracy_lstm)
-
-    # Print and save classification report
-    report_lstm = classification_report(y_bin_test, y_bin_pred_lstm, target_names=le1_classes)
-    print(report_lstm)
-    save_report(report_lstm, "lstm_binary")
-
-    # **Decision Tree Classifier (Multi-Class Classification)**
-
-    # Load the model from the models folder
-    with open('models/dt_multi.pkl', 'rb') as file:
-        dt_multi = pickle.load(file)
-
-    # Predict and calculate accuracy
-    y_multi_pred_dt = dt_multi.predict(X_multi_test)
-    multi_accuracy_dt = accuracy_score(y_multi_test, y_multi_pred_dt) * 100
-    print("Decision Tree Multi-Class Classification Accuracy: ", multi_accuracy_dt)
-
-    # Print and save classification report
-    report_dt_multi = classification_report(y_multi_test, y_multi_pred_dt, target_names=le2_classes)
-    print(report_dt_multi)
-    save_report(report_dt_multi, "dt_multi")
-
-    # **LSTM (Multi-Class Classification)**
-
-    # Load the LSTM model from the models folder
-    lstm_multi = load_model('models/lstm_multi.h5')
-
-    # Reshape the data to be 3-dimensional [samples, time steps, features] for LSTM
-    X_multi_lstm = X_multi.reshape((X_multi.shape[0], 1, X_multi.shape[1]))
-    X_multi_lstm_test = X_multi_lstm[X_multi_test.index]
-
-    # Predict and calculate accuracy
-    y_multi_pred_lstm = lstm_multi.predict(X_multi_lstm_test).argmax(axis=1)
-    multi_accuracy_lstm = accuracy_score(y_multi_test, y_multi_pred_lstm) * 100
-    print("LSTM Multi-Class Classification Accuracy: ", multi_accuracy_lstm)
-
-    # Print and save classification report
-    report_lstm_multi = classification_report(y_multi_test, y_multi_pred_lstm, target_names=le2_classes)
-    print(report_lstm_multi)
-    save_report(report_lstm_multi, "lstm_multi")
-
-    # **BiLSTM + Attention (Multi-Class Classification)**
-
-    # Load the BiLSTM + Attention model from the models folder
-    bilstm_attention_model = load_model('models/bilstm_attention_model.h5')
-
-    # Reshape the data to be 3-dimensional [samples, time steps, features] for BiLSTM
-    X_multi_blstm = X_multi.reshape((X_multi.shape[0], 1, X_multi.shape[1]))
-    X_multi_blstm_test = X_multi_blstm[X_multi_test.index]
-
-    # Predict and calculate accuracy
-    y_multi_pred_blstm = bilstm_attention_model.predict(X_multi_blstm_test).argmax(axis=1)
-    multi_accuracy_blstm = accuracy_score(y_multi_test, y_multi_pred_blstm) * 100
-    print("BiLSTM + Attention Multi-Class Classification Accuracy: ", multi_accuracy_blstm)
-
-    # Print and save classification report
-    report_blstm = classification_report(y_multi_test, y_multi_pred_blstm, target_names=le2_classes)
-    print(report_blstm)
-    save_report(report_blstm, "blstm_attention")
-
+# Example usage:
 if __name__ == "__main__":
-    main()
+    # Load the label encoder classes from le2_classes.npy
+    le2_classes = np.load('./label_classes/le2_classes.npy', allow_pickle=True)
+
+    # Load and preprocess the sample input data
+    X_sample = preprocess_sample_input(file_path)
+
+    # Load the trained model
+    model = load_model(MODEL_PATH)
+
+    # Make predictions and get class names
+    predicted_class_names = predict_classes(model, X_sample, le2_classes)
+
+    # Print the predicted class names
+    print("Predicted class names:", predicted_class_names)
