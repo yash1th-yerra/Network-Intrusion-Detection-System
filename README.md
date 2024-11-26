@@ -153,7 +153,11 @@ After they are plotter using following:
 ## Results and Insights
 
 This project provides a comparative view of several machine learning and deep learning techniques for network intrusion detection. The models provide a baseline for binary and multi-class classifications, showing how classical machine learning and neural network approaches perform on the task. 
+
+
 ![results](https://github.com/user-attachments/assets/eda3b38d-c2c2-4d86-9c16-3c3f541c2614)
+
+
 The output image showing the sequential classification of different attack types (DoS, normal, Probe, U2R, R2L) demonstrates the model's ability to correctly identify various network traffic patterns in practice, validating the effectiveness of the implemented BiLSTM with Attention architecture.
 
 
