@@ -165,9 +165,9 @@ The output image showing the sequential classification of different attack types
 
 ## **Future Work**
 
-"In the future, we plan to improve the model further by:
+In the future, we plan to improve the model further by:
 
 -   Exploring advanced techniques like **multi-head attention** and **transformers** for even better performance.
 -   Enhancing the model's **generalization** to unknown attack types.
 -   Investigating **online learning** techniques to adapt the model to real-time data changes.
--   Reducing **sampling randomness** in the dataset balancing process to ensure more accurate results."
+-   Reducing **sampling randomness** in the dataset balancing process to ensure more accurate results.
