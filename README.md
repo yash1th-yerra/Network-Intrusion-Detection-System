@@ -117,6 +117,11 @@ Each model’s performance is evaluated using:
 
 These metrics are summarized in classification report files for each model and saved in `classification_report_*.txt` files.
 
+## Model Performance Visualization
+
+-   **Accuracy Comparison**: Bar plot comparing model accuracies.
+-   **Training Metrics**: For deep learning models, additional plots visualize training and validation accuracy and loss across epochs.
+
 After they are plotter using following:
 -   **Accuracy vs Epochs**: For both training and validation accuracy.
 -   **Loss vs Epochs**: For both training and validation loss.
@@ -143,10 +148,7 @@ After they are plotter using following:
   
 
 
-## Model Performance Visualization
 
--   **Accuracy Comparison**: Bar plot comparing model accuracies.
--   **Training Metrics**: For deep learning models, additional plots visualize training and validation accuracy and loss across epochs.
 
 
 ## 
