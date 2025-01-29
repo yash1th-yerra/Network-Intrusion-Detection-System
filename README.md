@@ -117,6 +117,11 @@ Each model’s performance is evaluated using:
 
 These metrics are summarized in classification report files for each model and saved in `classification_report_*.txt` files.
 
+## Model Performance Visualization
+
+-   **Accuracy Comparison**: Bar plot comparing model accuracies.
+-   **Training Metrics**: For deep learning models, additional plots visualize training and validation accuracy and loss across epochs.
+
 After they are plotter using following:
 -   **Accuracy vs Epochs**: For both training and validation accuracy.
 -   **Loss vs Epochs**: For both training and validation loss.
@@ -143,22 +148,26 @@ After they are plotter using following:
   
 
 
-## Model Performance Visualization
 
--   **Accuracy Comparison**: Bar plot comparing model accuracies.
--   **Training Metrics**: For deep learning models, additional plots visualize training and validation accuracy and loss across epochs.
 
 
 ## 
 ## Results and Insights
 
-This project provides a comparative view of several machine learning techniques for network intrusion detection. The models provide a baseline for binary and multi-class classifications, showing how classical machine learning and neural network approaches perform on the tas
+This project provides a comparative view of several machine learning and deep learning techniques for network intrusion detection. The models provide a baseline for binary and multi-class classifications, showing how classical machine learning and neural network approaches perform on the task. 
+
+
+![results](https://github.com/user-attachments/assets/eda3b38d-c2c2-4d86-9c16-3c3f541c2614)
+
+
+The output image showing the sequential classification of different attack types (DoS, normal, Probe, U2R, R2L) demonstrates the model's ability to correctly identify various network traffic patterns in practice network traffic data given as input in batch, validating the effectiveness of the implemented BiLSTM with Attention architecture.
+
 
 ## **Future Work**
 
-"In the future, we plan to improve the model further by:
+In the future, we plan to improve the model further by:
 
 -   Exploring advanced techniques like **multi-head attention** and **transformers** for even better performance.
 -   Enhancing the model's **generalization** to unknown attack types.
 -   Investigating **online learning** techniques to adapt the model to real-time data changes.
--   Reducing **sampling randomness** in the dataset balancing process to ensure more accurate results."
+-   Reducing **sampling randomness** in the dataset balancing process to ensure more accurate results.
