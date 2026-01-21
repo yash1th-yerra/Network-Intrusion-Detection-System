@@ -163,6 +163,25 @@ This project provides a comparative view of several machine learning and deep le
 The output image showing the sequential classification of different attack types (DoS, normal, Probe, U2R, R2L) demonstrates the model's ability to correctly identify various network traffic patterns in practice network traffic data given as input in batch, validating the effectiveness of the implemented BiLSTM with Attention architecture.
 
 
+## Technical Improvements (New Features)
+
+### 1. Explainable AI (XAI) With SHAP
+We have integrated **SHAP (SHapley Additive exPlanations)** to provide transparency into the model's decision-making process. This helps security analysts understand *why* a particular network connection was flagged as an attack by visualizing feature contributions.
+- **Script**: `explainability.py`
+- **Output**: Feature importance summary plots.
+
+### 2. Model Optimization for Edge Deployment
+To support deployment on resource-constrained devices (e.g., routers, IoT gateways), we implemented a quantization pipeline converting the Keras model to **TensorFlow Lite (.tflite)**.
+- **Script**: `optimize_model.py`
+- **Result**: Reduced model size and faster inference latency.
+
+### 3. High-Performance API
+A production-ready **FastAPI** backend has been added to replace static scripts. It supports:
+- **Async Concurrency**: Efficiently handles multiple requests.
+- **Input Validation**: Uses Pydantic to ensure data integrity (strictly 93 features).
+- **Interactive Docs**: Swagger UI available at `/docs`.
+- **Command**: `uvicorn api:app --reload`
+
 ## **Future Work**
 
 In the future, we plan to improve the model further by:
